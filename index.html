@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>2042</title>
+<meta name="description" content="Aynı sayılı karoları birleştirerek katla, 2048'e ulaş, 2042'ye hoş gel." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%97%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>2042</h1>
+      <p class="tagline">aynı sayıları birleştir, geleceğe katla</p>
+      <p class="dedication">Melis Hanım'ıma özel olarak yapıldı</p>
+    </div>
+    <div class="scores">
+      <div class="score-box">
+        <span class="score-label">SKOR</span>
+        <span class="score-value" id="score">0</span>
+      </div>
+      <div class="score-box">
+        <span class="score-label">EN İYİ</span>
+        <span class="score-value" id="best">0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <p class="howto">
+      <span class="howto-keys"><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd></span>
+      ya da kaydır · aynı sayıları birleştirerek <strong>2048</strong>'e ulaş
+    </p>
+    <button id="new-game" class="btn">YENİ OYUN</button>
+  </div>
+
+  <div class="board-holder">
+    <div class="board" id="board">
+      <div class="cell-grid" id="cell-grid"></div>
+      <div class="tile-layer" id="tile-layer"></div>
+
+      <div class="board-overlay hidden" id="overlay">
+        <div class="overlay-panel">
+          <p class="overlay-eyebrow" id="overlay-eyebrow">2042</p>
+          <h2 class="overlay-title" id="overlay-title">Zaman Tükendi</h2>
+          <p class="overlay-sub" id="overlay-sub">Daha fazla hamle kalmadı.</p>
+          <div class="overlay-actions" id="overlay-actions">
+            <button id="overlay-restart" class="btn">YENİDEN BAŞLA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    <p>Skor bu tarayıcıda saklanır · yapımı: Claude</p>
+  </footer>
+
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
