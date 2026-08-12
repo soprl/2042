@@ -337,20 +337,34 @@
   }, { passive: false });
 
   let touchStart = null;
+  let touchDone = false;
+  const SWIPE_THRESH = 18;
+
   board.addEventListener("touchstart", (e) => {
     const t = e.changedTouches[0];
     touchStart = { x: t.clientX, y: t.clientY };
+    touchDone = false;
   }, { passive: true });
-  board.addEventListener("touchend", (e) => {
+
+  board.addEventListener("touchmove", (e) => {
     if (!touchStart) return;
+    // Swallow the gesture immediately so the page never scrolls under the finger.
+    e.preventDefault();
+    if (touchDone) return;
+
     const t = e.changedTouches[0];
     const dx = t.clientX - touchStart.x, dy = t.clientY - touchStart.y;
     const adx = Math.abs(dx), ady = Math.abs(dy);
-    const THRESH = 24;
-    if (Math.max(adx, ady) < THRESH) { touchStart = null; return; }
+    if (Math.max(adx, ady) < SWIPE_THRESH) return;
+
+    touchDone = true;
     if (adx > ady) gm.move(dx > 0 ? "right" : "left");
     else gm.move(dy > 0 ? "down" : "up");
+  }, { passive: false });
+
+  board.addEventListener("touchend", () => {
     touchStart = null;
+    touchDone = false;
   }, { passive: true });
 
   document.getElementById("new-game").addEventListener("click", restartGame);
