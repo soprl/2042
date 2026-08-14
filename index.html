@@ -767,7 +767,7 @@ kbd{
         <span class="cartridge-glyph">✕</span>
         <h2 class="cartridge-name">XOX</h2>
         <p class="cartridge-tag">Strateji · bilgisayara karşı</p>
-        <p class="cartridge-desc">Üç işareti yan yana getir. Karşındaki hiç şaşırmıyor.</p>
+        <p class="cartridge-desc">Üç işareti yan yana getir, dolabı yenebilirsin.</p>
         <span class="cartridge-cta">OYNA</span>
       </button>
 
@@ -1520,33 +1520,27 @@ const GameXox = (() => {
     cells[i] = "O";
     afterMove();
   }
-  function bestMove(b){
-    let bestScore = -Infinity, move = null;
+  function findWinningMove(b, mark){
     for(let i=0;i<9;i++){
       if(b[i]) continue;
-      b[i] = "O";
-      const s = minimax(b, false);
+      b[i] = mark;
+      const w = winnerOf(b);
       b[i] = null;
-      if(s > bestScore){ bestScore = s; move = i; }
+      if(w && w.mark === mark) return i;
     }
-    return move;
+    return null;
   }
-  function minimax(b, isMax, depth=0){
-    const res = winnerOf(b);
-    if(res){
-      if(res.mark === "O") return 10 - depth;
-      if(res.mark === "X") return depth - 10;
-      return 0;
+  const BLOCK_CHANCE = 0.4;
+  function bestMove(b){
+    const win = findWinningMove(b, "O");
+    if(win != null) return win;
+    if(Math.random() < BLOCK_CHANCE){
+      const block = findWinningMove(b, "X");
+      if(block != null) return block;
     }
-    if(isMax){
-      let best = -Infinity;
-      for(let i=0;i<9;i++){ if(!b[i]){ b[i]="O"; best=Math.max(best, minimax(b,false,depth+1)); b[i]=null; } }
-      return best;
-    } else {
-      let best = Infinity;
-      for(let i=0;i<9;i++){ if(!b[i]){ b[i]="X"; best=Math.min(best, minimax(b,true,depth+1)); b[i]=null; } }
-      return best;
-    }
+    const empties = [];
+    for(let i=0;i<9;i++) if(!b[i]) empties.push(i);
+    return empties[Math.floor(Math.random()*empties.length)];
   }
   function finish(res){
     over = true;
