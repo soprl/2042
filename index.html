@@ -1,4 +1,5 @@
 <title>2042 Arcade</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no" />
 <meta name="description" content="2042 Arcade — beş kartuşluk küçük bir oyun dolabı: 2042, Yılan, XOX, Hafıza ve Yaşam." />
 <style>
 @font-face {
@@ -155,8 +156,10 @@
 }
 
 *{box-sizing:border-box;}
-html,body{margin:0;min-height:100%;}
+html,body{margin:0;min-height:100%;overscroll-behavior-y:none;}
 body{
+  touch-action:pan-y;
+  -webkit-tap-highlight-color:transparent;
   background:
     radial-gradient(ellipse 900px 500px at 15% -10%, rgba(255,79,160,.16), transparent 60%),
     radial-gradient(ellipse 700px 500px at 100% 0%, rgba(199,155,255,.10), transparent 55%),
@@ -178,7 +181,7 @@ body::before{
     radial-gradient(ellipse 1200px 800px at 50% 0%, transparent 55%, rgba(0,0,0,.35));
 }
 
-button{font:inherit;}
+button{font:inherit;touch-action:manipulation;}
 a{color:inherit;}
 :focus-visible{outline:2px solid var(--cab-accent);outline-offset:2px;}
 
@@ -344,7 +347,8 @@ a{color:inherit;}
   background:transparent;
   border:1px solid var(--line);
   border-radius:8px;
-  padding:9px 13px;
+  padding:11px 15px;
+  min-height:44px;
   cursor:pointer;
   display:inline-flex;
   gap:7px;
@@ -428,7 +432,8 @@ kbd{
   background:linear-gradient(135deg,var(--cab-accent-soft),var(--cab-accent));
   border:none;
   border-radius:8px;
-  padding:11px 18px;
+  padding:12px 18px;
+  min-height:44px;
   cursor:pointer;
   transition:transform .12s ease, box-shadow .12s ease;
   box-shadow:0 6px 18px var(--cab-shadow);
@@ -540,6 +545,41 @@ kbd{
 }
 #cab-snake canvas{display:block;width:100%;height:100%;}
 
+#cab-snake .dpad{
+  display:none;
+  grid-template-columns:56px 56px 56px;
+  grid-template-rows:56px 56px 56px;
+  grid-template-areas:
+    ".    up    ."
+    "left mid right"
+    ".    down  .";
+  gap:8px;
+  justify-content:center;
+  margin:18px auto 0;
+  width:max-content;
+}
+#cab-snake .dpad-btn{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:12px;
+  color:var(--ink);
+  font-size:20px;
+  line-height:1;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .12s ease, transform .08s ease;
+}
+#cab-snake .dpad-btn:active{transform:scale(.92);border-color:var(--cab-accent);}
+#cab-snake .dpad-up{grid-area:up;}
+#cab-snake .dpad-left{grid-area:left;}
+#cab-snake .dpad-right{grid-area:right;}
+#cab-snake .dpad-down{grid-area:down;}
+#cab-snake .dpad-mid{grid-area:mid;visibility:hidden;}
+
+@media (hover:none) and (pointer:coarse){
+  #cab-snake .dpad{display:grid;}
+}
+
 /* ===== xox ===== */
 #cab-xox .xox-frame{position:relative;max-width:340px;margin:0 auto;}
 #cab-xox .xox-board{
@@ -583,7 +623,7 @@ kbd{
   max-width:420px;
   margin:0 auto;
 }
-.mem-card{aspect-ratio:1/1;cursor:pointer;perspective:600px;}
+.mem-card{aspect-ratio:1/1;cursor:pointer;perspective:600px;touch-action:manipulation;}
 .mem-card-inner{
   position:relative;
   width:100%;height:100%;
@@ -820,6 +860,14 @@ kbd{
             <div class="overlay-actions"></div>
           </div>
         </div>
+      </div>
+
+      <div class="dpad">
+        <button class="dpad-btn dpad-up" data-dir="up" aria-label="Yukarı">↑</button>
+        <button class="dpad-btn dpad-left" data-dir="left" aria-label="Sol">←</button>
+        <div class="dpad-btn dpad-mid"></div>
+        <button class="dpad-btn dpad-right" data-dir="right" aria-label="Sağ">→</button>
+        <button class="dpad-btn dpad-down" data-dir="down" aria-label="Aşağı">↓</button>
       </div>
     </div>
   </section>
@@ -1368,6 +1416,11 @@ const GameSnake = (() => {
     e.preventDefault();
     queueDir(v);
   }
+
+  const DIR_VECTORS = { up:{x:0,y:-1}, down:{x:0,y:1}, left:{x:-1,y:0}, right:{x:1,y:0} };
+  root.querySelectorAll(".dpad-btn[data-dir]").forEach((btn) => {
+    btn.addEventListener("click", () => queueDir(DIR_VECTORS[btn.dataset.dir]));
+  });
 
   let touchStart=null;
   canvas.addEventListener("touchstart",(e)=>{ const t=e.changedTouches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true});
